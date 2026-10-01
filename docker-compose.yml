@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: neurovision-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=NeuroVision AI
+      - MODEL_PATH=./model/brain_tumor_model.pth
+      - ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:80,http://localhost
+      - MAX_FILE_SIZE_MB=10
+      - API_PREFIX=/api/v1
+      - DEBUG=false
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: neurovision-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
