@@ -49,6 +49,10 @@ export const usePrediction = () => {
     }
   }, [selectedFile]);
 
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   const reset = useCallback(() => {
     removeFile();
   }, [removeFile]);
@@ -70,6 +74,7 @@ export const usePrediction = () => {
     selectFile,
     removeFile,
     analyze,
-    reset
+    reset,
+    clearError,
   };
 };

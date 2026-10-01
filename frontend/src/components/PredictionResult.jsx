@@ -26,11 +26,25 @@ const PredictionResult = ({ result, previewUrl, onReset }) => {
   else if (confidence < 0.8) confColor = 'text-amber-400';
 
   return (
-    <div className="w-full bg-[#1e1b4b]/60 backdrop-blur-md rounded-2xl border border-indigo-500/30 p-6 md:p-8 shadow-2xl relative overflow-hidden">
-      {/* Decorative top border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-cyan-400 to-indigo-500"></div>
-      
-      <div className="flex flex-wrap items-center gap-3 mb-6">
+    <div className="w-full flex flex-col gap-3 animate-in fade-in duration-300">
+      {/* Top back navigation button */}
+      <div>
+        <button 
+          onClick={onReset}
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer group"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>&larr; Back to Image Selection</span>
+        </button>
+      </div>
+
+      <div className="w-full bg-[#1e1b4b]/60 backdrop-blur-md rounded-2xl border border-indigo-500/30 p-6 md:p-8 shadow-2xl relative overflow-hidden">
+        {/* Decorative top border */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-cyan-400 to-indigo-500"></div>
+        
+        <div className="flex flex-wrap items-center gap-3 mb-6">
         <div className="bg-cyan-900/50 p-2 rounded-full text-cyan-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -172,9 +186,12 @@ const PredictionResult = ({ result, previewUrl, onReset }) => {
 
         <button 
           onClick={onReset}
-          className="px-6 py-3 bg-[#0f0b1a] hover:bg-slate-800 text-slate-300 hover:text-white font-semibold text-xs uppercase tracking-wider rounded-xl border border-indigo-800/50 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0f0b1a] hover:bg-slate-800 text-slate-300 hover:text-white font-semibold text-xs uppercase tracking-wider rounded-xl border border-indigo-800/50 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
         >
-          Analyze Another Scan
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          &larr; Back to Selection / Analyze Another Scan
         </button>
       </div>
 
@@ -184,6 +201,7 @@ const PredictionResult = ({ result, previewUrl, onReset }) => {
         result={result}
         previewUrl={previewUrl}
       />
+    </div>
     </div>
   );
 };
