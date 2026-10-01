@@ -12,7 +12,8 @@ import torch.nn.functional as F
 from app.core.config import get_settings
 from app.core.logging_config import get_logger
 from app.models.classifier import create_model, CLASS_NAMES
-from app.services.preprocessing_service import preprocess_image
+from app.services.preprocessing_service import preprocess_image_and_rgb
+from app.services.gradcam_service import gradcam_service
 
 logger = get_logger(__name__)
 
@@ -140,8 +141,8 @@ class InferenceService:
 
         start_time = time.time()
 
-        # Preprocess image
-        tensor = preprocess_image(image_bytes)
+        # Preprocess image and retain RGB array for Grad-CAM
+        tensor, preprocessed_rgb = preprocess_image_and_rgb(image_bytes)
         tensor = tensor.to(self.device)
 
         # Run inference
@@ -154,6 +155,14 @@ class InferenceService:
         predicted_idx = int(probs.argmax())
         predicted_class = self.class_names[predicted_idx]
         confidence = float(probs[predicted_idx])
+
+        # Compute Grad-CAM visual attention heatmap overlay
+        gradcam_overlay = gradcam_service.generate_heatmap(
+            model=self.model,
+            input_tensor=tensor,
+            target_class_idx=predicted_idx,
+            preprocessed_rgb=preprocessed_rgb,
+        )
 
         # Build probability dict with all classes
         prob_dict = {
@@ -173,6 +182,7 @@ class InferenceService:
             "prediction": predicted_class,
             "confidence": round(confidence, 4),
             "probabilities": prob_dict,
+            "gradcam_heatmap": gradcam_overlay,
             "model_name": "EfficientNet-B0",
             "image_size": "256x256",
             "inference_time_ms": round(elapsed * 1000, 1),

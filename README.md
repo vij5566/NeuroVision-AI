@@ -23,6 +23,9 @@ The system returns:
 - **Exact Pipeline Reproduction**: Backend mirrors the training preprocessing pipeline identically (conservative brain crop, CLAHE enhancement, bicubic resize, and ImageNet normalization).
 - **Single-Load Lifespan Pattern**: The PyTorch model checkpoint is loaded once into memory during server startup and evaluated under `torch.no_grad()` to maximize throughput.
 - **Hardware Agnostic**: Automatic device selection using CUDA acceleration when available, with seamless fallback to CPU.
+- **Explainable AI (Grad-CAM)**: Real-time Gradient-weighted Class Activation Mapping hooks into `model.features[-1]` to compute spatial attention heatmaps. The frontend offers an interactive toggle between Heatmap Overlay and Side-by-Side comparison to show exactly which cranial regions influenced the prediction.
+- **1-Click Demo Gallery**: Built-in sample gallery with verified MRI scans across all four classes enables instant testing without needing local image files.
+- **Robust Out-of-Distribution Guard**: Automated physical MRI validation rejects non-MRI uploads (color photos, documents, screenshots, blank images) with clear medical guidance.
 - **Production-Ready Defensive API**: Mime-type checking, file extension validation, payload size enforcement, structured error handling without stack trace leakage, and configurable CORS.
 - **Docker Support**: Multi-stage Dockerfiles for both backend and frontend, orchestratable via `docker compose`.
 

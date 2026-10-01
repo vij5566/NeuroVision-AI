@@ -106,28 +106,16 @@ def apply_clahe(image: np.ndarray) -> np.ndarray:
     return enhanced
 
 
-def preprocess_image(image_bytes: bytes) -> torch.Tensor:
+def preprocess_image_and_rgb(image_bytes: bytes) -> tuple[torch.Tensor, np.ndarray]:
     """
     Full preprocessing pipeline matching training exactly.
-
-    Pipeline:
-    1. Decode image bytes to numpy array
-    2. Convert BGR to RGB
-    3. Conservative brain crop
-    4. CLAHE enhancement
-    5. Resize to 224x224
-    6. Convert to float32 tensor [0, 1]
-    7. Normalize with ImageNet statistics
-    8. Add batch dimension
+    Returns both the normalized PyTorch tensor and the uint8 RGB array for Grad-CAM.
 
     Args:
         image_bytes: Raw image file bytes
 
     Returns:
-        Preprocessed tensor of shape (1, 3, 224, 224)
-
-    Raises:
-        ValueError: If image cannot be decoded
+        tuple of (tensor of shape (1, 3, 256, 256), RGB uint8 numpy array of shape (256, 256, 3))
     """
     # Decode image bytes
     nparr = np.frombuffer(image_bytes, np.uint8)
@@ -145,21 +133,36 @@ def preprocess_image(image_bytes: bytes) -> torch.Tensor:
     # Step 2: CLAHE enhancement
     image = apply_clahe(image)
 
-    # Step 3: Resize to target size
-    image = cv2.resize(image, TARGET_SIZE, interpolation=cv2.INTER_CUBIC)
+    # Step 3: Resize to target size (256x256, Bicubic)
+    image_uint8 = cv2.resize(image, TARGET_SIZE, interpolation=cv2.INTER_CUBIC)
 
     # Step 4: Convert to float32 and normalize to [0, 1]
-    image = image.astype(np.float32) / 255.0
+    image_float = image_uint8.astype(np.float32) / 255.0
 
     # Step 5: Convert to tensor (H, W, C) -> (C, H, W)
-    tensor = torch.from_numpy(image).permute(2, 0, 1)
+    tensor = torch.from_numpy(image_float).permute(2, 0, 1)
 
     # Step 6: ImageNet normalization
     mean = torch.tensor(IMAGENET_MEAN).view(3, 1, 1)
     std = torch.tensor(IMAGENET_STD).view(3, 1, 1)
     tensor = (tensor - mean) / std
 
-    # Step 7: Add batch dimension -> (1, 3, 224, 224)
+    # Step 7: Add batch dimension -> (1, 3, 256, 256)
     tensor = tensor.unsqueeze(0)
 
+    return tensor, image_uint8
+
+
+def preprocess_image(image_bytes: bytes) -> torch.Tensor:
+    """
+    Full preprocessing pipeline matching training exactly.
+
+    Args:
+        image_bytes: Raw image file bytes
+
+    Returns:
+        Preprocessed tensor of shape (1, 3, 256, 256)
+    """
+    tensor, _ = preprocess_image_and_rgb(image_bytes)
     return tensor
+

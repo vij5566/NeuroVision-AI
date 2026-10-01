@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import UploadCard from './components/UploadCard';
+import SampleGallery from './components/SampleGallery';
 import ImagePreview from './components/ImagePreview';
 import AnalysisLoader from './components/AnalysisLoader';
 import PredictionResult from './components/PredictionResult';
@@ -34,6 +35,8 @@ function App() {
             <>
               <HeroSection />
               <UploadCard onFileSelect={selectFile} />
+              <SampleGallery onSelectSample={selectFile} disabled={isLoading} />
+              
               {error && (
                 <div className="w-full bg-red-950/40 border border-red-500/50 text-red-200 p-5 rounded-2xl shadow-xl flex items-start gap-4 animate-in fade-in duration-300">
                   <div className="p-2 bg-red-900/60 rounded-xl text-red-400 shrink-0 mt-0.5">
@@ -82,7 +85,11 @@ function App() {
 
           {/* State: Result */}
           {result && !isLoading && (
-            <PredictionResult result={result} onReset={reset} />
+            <PredictionResult 
+              result={result} 
+              previewUrl={previewUrl} 
+              onReset={reset} 
+            />
           )}
           
         </div>

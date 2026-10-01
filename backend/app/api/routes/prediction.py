@@ -131,4 +131,5 @@ async def predict(file: UploadFile = File(..., description="Brain MRI image file
         model_name=result["model_name"],
         image_size=result["image_size"],
         inference_time_ms=result["inference_time_ms"],
+        gradcam_heatmap=result.get("gradcam_heatmap"),
     )

@@ -51,6 +51,10 @@ class PredictionResponse(BaseModel):
     inference_time_ms: float = Field(
         ..., description="Inference time in milliseconds", examples=[45.2]
     )
+    gradcam_heatmap: str | None = Field(
+        default=None,
+        description="Base64-encoded Grad-CAM attention heatmap overlay image",
+    )
 
 
 class HealthResponse(BaseModel):
