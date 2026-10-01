@@ -46,3 +46,15 @@ body {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
+
+/* Print optimization for Clinical Diagnostic Report */
+@media print {
+  body {
+    background: white !important;
+    color: #0f172a !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

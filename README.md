@@ -24,6 +24,8 @@ The system returns:
 - **Single-Load Lifespan Pattern**: The PyTorch model checkpoint is loaded once into memory during server startup and evaluated under `torch.no_grad()` to maximize throughput.
 - **Hardware Agnostic**: Automatic device selection using CUDA acceleration when available, with seamless fallback to CPU.
 - **Explainable AI (Grad-CAM)**: Real-time Gradient-weighted Class Activation Mapping hooks into `model.features[-1]` to compute spatial attention heatmaps. The frontend offers an interactive toggle between Heatmap Overlay and Side-by-Side comparison to show exactly which cranial regions influenced the prediction.
+- **Exportable Clinical Diagnostic Report (PDF)**: 1-click clinical summary report generator featuring side-by-side visual evidence, primary findings, full probability distribution, pathology notes, and browser print-to-PDF formatting.
+- **Interactive Model Specs & Benchmark Dashboard**: Built-in modal presenting 2-stage transfer learning architecture, Focal Loss formulation, test confusion matrix (1,600 test scans), macro F1 (95.4%), and parameter statistics.
 - **1-Click Demo Gallery**: Built-in sample gallery with verified MRI scans across all four classes enables instant testing without needing local image files.
 - **Robust Out-of-Distribution Guard**: Automated physical MRI validation rejects non-MRI uploads (color photos, documents, screenshots, blank images) with clear medical guidance.
 - **Production-Ready Defensive API**: Mime-type checking, file extension validation, payload size enforcement, structured error handling without stack trace leakage, and configurable CORS.

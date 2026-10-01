@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ProbabilityChart from './ProbabilityChart';
+import ClinicalReportModal from './ClinicalReportModal';
 import { CLASS_DISPLAY_NAMES } from '../utils/constants';
 
 const CLASS_DESCRIPTIONS = {
@@ -12,6 +13,7 @@ const CLASS_DESCRIPTIONS = {
 const PredictionResult = ({ result, previewUrl, onReset }) => {
   const { prediction, confidence, probabilities, class_descriptions, gradcam_heatmap, inference_time_ms } = result || {};
   const [viewMode, setViewMode] = useState('overlay'); // 'overlay' | 'sideBySide'
+  const [isReportOpen, setIsReportOpen] = useState(false);
   
   // Format prediction
   const displayClass = CLASS_DISPLAY_NAMES[prediction] || prediction;
@@ -157,14 +159,31 @@ const PredictionResult = ({ result, previewUrl, onReset }) => {
         </div>
       )}
       
-      <div className="flex justify-center mt-2">
+      <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+        <button
+          onClick={() => setIsReportOpen(true)}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-semibold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-cyan-500/20 transition-all focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export Diagnostic Report (PDF)
+        </button>
+
         <button 
           onClick={onReset}
-          className="px-8 py-3 bg-[#0f0b1a] hover:bg-gray-800 text-white font-medium rounded-xl border border-indigo-800/50 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          className="px-6 py-3 bg-[#0f0b1a] hover:bg-slate-800 text-slate-300 hover:text-white font-semibold text-xs uppercase tracking-wider rounded-xl border border-indigo-800/50 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
         >
           Analyze Another Scan
         </button>
       </div>
+
+      <ClinicalReportModal
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        result={result}
+        previewUrl={previewUrl}
+      />
     </div>
   );
 };

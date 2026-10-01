@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import UploadCard from './components/UploadCard';
@@ -6,6 +6,7 @@ import SampleGallery from './components/SampleGallery';
 import ImagePreview from './components/ImagePreview';
 import AnalysisLoader from './components/AnalysisLoader';
 import PredictionResult from './components/PredictionResult';
+import ModelSpecsModal from './components/ModelSpecsModal';
 import Disclaimer from './components/Disclaimer';
 import Footer from './components/Footer';
 import { usePrediction } from './hooks/usePrediction';
@@ -23,9 +24,11 @@ function App() {
     reset
   } = usePrediction();
 
+  const [isSpecsOpen, setIsSpecsOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar onOpenSpecs={() => setIsSpecsOpen(true)} />
       
       <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-4xl mx-auto flex flex-col gap-8">
@@ -94,6 +97,11 @@ function App() {
           
         </div>
       </main>
+
+      <ModelSpecsModal
+        isOpen={isSpecsOpen}
+        onClose={() => setIsSpecsOpen(false)}
+      />
 
       <Disclaimer />
       <Footer />
